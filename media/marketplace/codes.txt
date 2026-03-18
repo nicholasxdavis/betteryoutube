@@ -11,8 +11,7 @@ https://github.com/nicholasxdavis/bytprivate
 
 We will access this repo and fetch the JSON file containing codes and other data using the GitHub API, Actions, and Secrets.
 
-      "name": "Unlock Everything",
+      "name": "Lifetime Pro", // https://buymeacoffee.com/galore/e/521365
       "code": "D7S3-K9S2-DXXP-XDLC" < this is how the code would look for example (example code).
 
-      "name": "Unlock Pro Themes",
-      "code": "JNR8-DFFY-PXXC-W6DS" < this is how the code would look for example (example code).
+
