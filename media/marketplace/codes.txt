@@ -1,7 +1,7 @@
 Codes are hosted privately on GitHub in our repo:
 
-'nicholasxdavis/bytprivate' 
-https://github.com/nicholasxdavis/bytprivate
+'nicholasxdavis/bytprivate' < example rep
+https://github.com/nicholasxdavis/bytprivate < example rep
 
 	- Our entry-point into this repo would be a bit problematic but totally doable. 
 	- We need to keep in mind this whole system is for a chrome extension, therefor we cannot setup repository secrets sense this 	project would live in the computer/locally not on a landing page/etc.
