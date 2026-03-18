@@ -1,0 +1,6 @@
+default"phantom" : #3c355c
+blue : #38bdf8
+purple : #a855f7
+red-black : #ff0000 
+red-white : #ff0000
+soft-red : #f87171

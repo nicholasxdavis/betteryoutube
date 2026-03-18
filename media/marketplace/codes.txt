@@ -1,0 +1,18 @@
+Codes are hosted privately on GitHub in our repo:
+
+'nicholasxdavis/bytprivate' 
+https://github.com/nicholasxdavis/bytprivate
+
+	- Our entry-point into this repo would be a bit problematic but totally doable. 
+	- We need to keep in mind this whole system is for a chrome extension, therefor we cannot setup repository secrets sense this 	project would live in the computer/locally not on a landing page/etc.
+	- We need a system that will keep these codes 100% private, as-well as our GitHub API Key and any other sensitive information. 
+	- The whole reason/ single purpose for this system would be so that we could take payment via buymeacoffee in a very 	simple/calm underwhelming way, no backend needed. Just redeem a code you receive after your purchase on BMC. 
+	- This needs to work smoothly and amazingly.
+
+We will access this repo and fetch the JSON file containing codes and other data using the GitHub API, Actions, and Secrets.
+
+      "name": "Unlock Everything",
+      "code": "D7S3-K9S2-DXXP-XDLC" < this is how the code would look for example (example code).
+
+      "name": "Unlock Pro Themes",
+      "code": "JNR8-DFFY-PXXC-W6DS" < this is how the code would look for example (example code).
