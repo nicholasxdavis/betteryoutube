@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BetterYouTube Settings</title>
+  <link rel="stylesheet" href="tailwind.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <!-- Phosphor Icons (Lightweight alternative to Lucide for Vanilla JS) -->
+  <script src="assets/phosphor-icons-web.js"></script>
+</head>
+<body class="antialiased selection:bg-zinc-800 transition-colors duration-500 overflow-hidden w-[380px] h-[580px]">
+  
+  <!-- Main App Container -->
+  <div id="app-container" class="w-full h-full flex flex-col relative z-10 transform-gpu transition-colors duration-500 ring-1 ring-white/[0.08] overflow-hidden">
+    
+    <!-- Ambient Noise -->
+    <div class="absolute inset-0 pointer-events-none mix-blend-overlay z-0 noise-bg"></div>
+
+    <!-- Welcome Dialog -->
+    <div id="welcome-dialog" class="welcome-overlay is-hidden">
+      <div class="dialog-panel welcome-panel">
+        <div class="welcome-top-fade" aria-hidden="true"></div>
+        <div class="welcome-content">
+          <h2 class="welcome-title">BetterYouTube</h2>
+          <p class="welcome-desc">
+            Take full control of your viewing experience. Block ads, hide Shorts, and personalize your layout instantly.
+          </p>
+          <button id="close-welcome" class="welcome-btn" type="button">
+            Configure Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="px-5 pt-6 pb-3 flex flex-col gap-4 z-30 sticky top-0 transition-all duration-300 transform-gpu bg-transparent border-b border-transparent">
+      <div class="flex items-center justify-between px-1">
+        <h1 class="text-[21px] font-semibold tracking-tight leading-none header-title">
+          BetterYouTube
+        </h1>
+        <button id="open-advanced" class="h-[36px] w-[36px] inline-flex items-center justify-center rounded-xl border border-transparent transition-all duration-200 active:scale-95 group settings-btn">
+          <i class="ph ph-gear text-[18px] transition-transform duration-500 group-hover:rotate-90"></i>
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="relative flex h-10 items-center rounded-xl p-1 border tab-container">
+        <div id="tab-indicator" class="absolute top-1 bottom-1 rounded-[8px] transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform-gpu indicator-style" style="left: 4px; width: calc((100% - 8px) / 3);"></div>
+        
+        <button data-tab="general" class="tab-btn active relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1 text-[13px] font-bold transition-colors w-full flex-1 gap-1.5 focus-visible:outline-none">
+          General
+        </button>
+        <button data-tab="appearance" class="tab-btn relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1 text-[13px] font-bold transition-colors w-full flex-1 gap-1.5 focus-visible:outline-none">
+          Appearance
+        </button>
+        <button data-tab="pro" class="tab-btn relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1 text-[13px] font-bold transition-colors w-full flex-1 gap-1.5 focus-visible:outline-none">
+          <i class="ph ph-crown ph-fill text-[13px] pro-icon-color"></i>
+          <span id="pro-tab-text">Pro</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-scroll" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 py-2 custom-scrollbar relative z-10">
+      
+      <!-- General Tab -->
+      <div id="tab-general" class="tab-content space-y-7 pb-10 mt-2">
+        <div class="space-y-2 animate-stagger-1">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Video Player</h3>
+          <div class="flex flex-col" id="general-switches">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+        <div class="space-y-3 animate-stagger-2">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Watch Analytics</h3>
+          <div id="watch-analytics-card" class="p-4 rounded-[16px] border flex flex-col gap-3 advanced-card">
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-[12px] font-semibold" id="wa-total">Total: 0m</div>
+              <div class="text-[11px] opacity-80" id="wa-trend">Trend: --</div>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5" id="wa-periods">
+              <button class="wa-period h-7 rounded-lg border text-[10px] font-bold" data-period="daily">D</button>
+              <button class="wa-period h-7 rounded-lg border text-[10px] font-bold" data-period="weekly">W</button>
+              <button class="wa-period h-7 rounded-lg border text-[10px] font-bold" data-period="monthly">M</button>
+              <button class="wa-period h-7 rounded-lg border text-[10px] font-bold" data-period="yearly">Y</button>
+            </div>
+            <canvas id="watch-analytics-chart" width="320" height="100" class="w-full h-[100px] rounded-lg"></canvas>
+            <div class="grid grid-cols-3 gap-2 text-[10px]">
+              <div class="rounded-lg border px-2 py-1.5">
+                <div class="opacity-70">Avg/day</div>
+                <div class="font-bold text-[11px]" id="wa-avg-day">0m</div>
+              </div>
+              <div class="rounded-lg border px-2 py-1.5">
+                <div class="opacity-70">Streak</div>
+                <div class="font-bold text-[11px]" id="wa-streak">0d</div>
+              </div>
+              <div class="rounded-lg border px-2 py-1.5">
+                <div class="opacity-70">Best Day</div>
+                <div class="font-bold text-[11px]" id="wa-best-day">0m</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance Tab -->
+      <div id="tab-appearance" class="tab-content hidden space-y-7 pb-10 mt-2">
+        <div class="space-y-3 animate-stagger-1">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Extension Skin Mode</h3>
+          <div class="relative flex h-[42px] items-center rounded-xl p-1 border skin-selector-bg">
+             <div id="skin-indicator" class="absolute top-1 bottom-1 rounded-[8px] transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform-gpu skin-indicator-style" style="width: calc(50% - 4px);"></div>
+             <button id="btn-dark-mode" class="relative z-10 flex-1 flex items-center justify-center gap-2 text-[13px] font-bold transition-colors duration-300">
+                <i class="ph ph-moon text-[14px]"></i> Dark
+             </button>
+             <button id="btn-light-mode" class="relative z-10 flex-1 flex items-center justify-center gap-2 text-[13px] font-bold transition-colors duration-300">
+                <i class="ph ph-sun text-[14px]"></i> Light
+             </button>
+          </div>
+        </div>
+
+        <div class="space-y-3 animate-stagger-2">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Accent Color</h3>
+          <div class="grid grid-cols-5 gap-2.5 px-1" id="theme-picker">
+             <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="space-y-2 animate-stagger-3">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Interface</h3>
+          <div class="flex flex-col" id="appearance-switches">
+             <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro Tab -->
+      <div id="tab-pro" class="tab-content hidden flex flex-col flex-1 min-h-0 space-y-7 pb-10 mt-2">
+        <div class="pro-card-perspective animate-stagger-1 px-1">
+          <div id="pro-card" class="pro-card-3d relative overflow-hidden rounded-[20px] border p-7 text-center shadow-lg group cursor-pointer">
+             <div class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(245,158,11,0.08)_50%,transparent_100%)] animate-shimmer-border pointer-events-none opacity-50"></div>
+             <div id="pro-card-bg" class="absolute inset-0 pointer-events-none"></div>
+             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none transform-gpu mix-blend-screen pro-glare-effect"></div>
+             <div id="pro-badge" class="absolute top-4 right-4 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md pro-content-3d">
+                Premium
+             </div>
+             
+             <div id="pro-content-area" class="relative z-20 pro-content-3d flex flex-col items-center">
+                <!-- Populated via JS based on Pro Status -->
+             </div>
+          </div>
+        </div>
+
+        <div class="text-center animate-stagger-2 px-1" id="redeem-prompt-container">
+           <button id="open-advanced-from-pro" class="text-[12px] font-medium transition-colors underline underline-offset-4 redeem-prompt-text">
+              Already have a code? Redeem here.
+           </button>
+        </div>
+
+        <div class="space-y-2 animate-stagger-3">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 flex items-center gap-1.5 section-title-pro">
+             Early Access Tools <i class="ph ph-crown ph-fill text-[10px]"></i>
+          </h3>
+          <div class="flex flex-col" id="pro-switches">
+             <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="px-5 py-3 border-t backdrop-blur-xl flex justify-end items-center z-40 relative transition-colors duration-300">
+      <div class="hidden text-[10px] font-bold tracking-[0.15em] uppercase cursor-default footer-version" aria-hidden="true"></div>
+      <a href="https://buymeacoffee.com/galore" target="_blank" class="group relative inline-flex h-9 items-center justify-center rounded-xl border px-3.5 py-1 text-[12px] font-semibold transition-all duration-300 shadow-sm overflow-hidden active:scale-95 support-btn">
+         <i class="ph ph-heart ph-fill text-[14px] mr-2 opacity-70 group-hover:opacity-100 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110 support-icon shrink-0"></i>
+         Support Us
+      </a>
+    </footer>
+
+    <!-- Advanced Settings Overlay -->
+    <div id="advanced-overlay" class="absolute inset-0 z-50 flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform-gpu translate-x-full">
+      <header class="px-5 pt-6 pb-4 flex items-center gap-3.5 z-30 sticky top-0 backdrop-blur-xl border-b shadow-sm advanced-header">
+        <button id="close-advanced" class="h-[36px] w-[36px] inline-flex items-center justify-center rounded-xl border transition-all duration-200 active:scale-95 group shrink-0 advanced-back-btn">
+          <i class="ph ph-arrow-left text-[18px] group-hover:-translate-x-0.5 transition-transform duration-300"></i>
+        </button>
+        <div class="flex flex-col flex-1 min-w-0">
+          <h1 class="text-[17px] font-bold tracking-tight leading-none truncate advanced-title">
+            Advanced Settings
+          </h1>
+        </div>
+      </header>
+      
+      <main class="flex-1 overflow-y-auto overflow-x-hidden px-5 py-4 custom-scrollbar">
+         <div class="space-y-8 pb-10 mt-2">
+            <!-- License Section -->
+            <div class="space-y-3 animate-stagger-1">
+               <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">License & Activation</h3>
+               <div class="p-4 rounded-[16px] border flex flex-col gap-3.5 advanced-card">
+                  <div class="flex items-center gap-3.5">
+                     <div id="license-icon-container" class="p-2.5 rounded-xl transition-colors">
+                        <i id="license-icon" class="text-[18px]"></i>
+                     </div>
+                     <div class="text-left flex-1 min-w-0">
+                        <h4 id="license-status-title" class="text-[13px] font-bold truncate"></h4>
+                        <p id="license-status-desc" class="text-[12px] mt-0.5 truncate"></p>
+                     </div>
+                  </div>
+                  <div id="redeem-input-area" class="flex items-center gap-2 mt-1">
+                     <input type="text" id="redeem-input" placeholder="Enter activation code..." class="flex-1 h-10 border rounded-xl px-3.5 text-[13px] focus:outline-none transition-all">
+                     <button id="redeem-btn" class="h-10 px-4 text-[13px] font-bold rounded-xl border transition-colors active:scale-95">
+                        Redeem
+                     </button>
+                  </div>
+               </div>
+            </div>
+            
+            <!-- Community -->
+            <div class="space-y-3 animate-stagger-2">
+               <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Community</h3>
+               <div class="px-1">
+                  <a href="https://github.com/nicholasxdavis/betteryoutube/issues" target="_blank" rel="noopener noreferrer" class="issue-inline-link text-[11px] font-medium transition-colors underline underline-offset-4">
+                     Report an issue
+                  </a>
+               </div>
+               <div class="flex flex-col gap-2.5">
+                  <a href="https://chrome.google.com/webstore" target="_blank" class="group flex items-center justify-between p-4 rounded-[16px] border transition-all duration-300 active:scale-[0.98] overflow-hidden relative advanced-action-card review-card">
+                     <div class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.03)_50%,transparent_100%)] -translate-x-full group-hover:animate-shimmer-border"></div>
+                     <div class="flex items-center gap-3.5 relative z-10">
+                        <div class="p-2.5 rounded-xl bg-opacity-10 border shadow-inner transition-colors duration-300 review-icon-bg">
+                           <i class="ph ph-star ph-fill text-[18px] group-hover:scale-110 transition-all duration-300 review-icon"></i>
+                        </div>
+                        <div class="text-left flex-1 min-w-0">
+                           <h4 class="text-[13px] font-bold transition-colors truncate card-title">Leave a Review</h4>
+                           <p class="text-[12px] mt-0.5 truncate card-desc">Rate us 5 stars on the Web Store.</p>
+                        </div>
+                     </div>
+                     <i class="ph ph-caret-right text-[16px] transition-colors relative z-10 review-arrow"></i>
+                  </a>
+                  <a href="https://github.com/nicholasxdavis/betteryoutube/issues" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-4 rounded-[16px] border transition-all duration-300 active:scale-[0.98] overflow-hidden relative advanced-action-card issue-card">
+                     <div class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.03)_50%,transparent_100%)] -translate-x-full group-hover:animate-shimmer-border"></div>
+                     <div class="flex items-center gap-3.5 relative z-10">
+                        <div class="p-2.5 rounded-xl bg-opacity-10 border shadow-inner transition-colors duration-300 issue-icon-bg">
+                           <i class="ph ph-bug-beetle ph-fill text-[18px] group-hover:scale-110 transition-all duration-300 issue-icon"></i>
+                        </div>
+                        <div class="text-left flex-1 min-w-0">
+                           <h4 class="text-[13px] font-bold transition-colors truncate issue-title">Issues & Bugs</h4>
+                           <p class="text-[12px] mt-0.5 truncate issue-desc">Open the GitHub issue tracker.</p>
+                        </div>
+                     </div>
+                     <i class="ph ph-caret-right text-[16px] transition-colors relative z-10 issue-arrow"></i>
+                  </a>
+               </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="space-y-3 animate-stagger-3">
+               <h3 class="text-[11px] font-bold uppercase tracking-widest px-1 section-title">Contact</h3>
+               <div class="p-4 rounded-[16px] border flex flex-col gap-3.5 advanced-card">
+                  <p class="text-[12px] leading-relaxed contact-help-text">
+                     Send support requests, issue details, or feedback directly.
+                  </p>
+                  <form action="https://formspree.io/f/maqpvrpz" method="POST" target="_blank" class="flex flex-col gap-2.5" id="contact-form">
+                     <input type="hidden" name="source" value="BetterYouTube Extension">
+                     <input type="text" name="name" placeholder="Your name" autocomplete="name" required class="h-10 border rounded-xl px-3.5 text-[13px] focus:outline-none transition-all contact-input">
+                     <input type="email" name="email" placeholder="Your email" autocomplete="email" required class="h-10 border rounded-xl px-3.5 text-[13px] focus:outline-none transition-all contact-input">
+                     <select name="topic" required class="h-10 border rounded-xl px-3.5 text-[13px] focus:outline-none transition-all contact-input">
+                        <option value="Support">Support</option>
+                        <option value="Bug report">Bug report</option>
+                        <option value="Feature request">Feature request</option>
+                        <option value="Other">Other</option>
+                     </select>
+                     <textarea name="message" placeholder="How can we help?" required class="min-h-[88px] border rounded-xl px-3.5 py-2.5 text-[13px] resize-none focus:outline-none transition-all contact-textarea"></textarea>
+                     <button type="submit" class="h-10 px-4 text-[13px] font-bold rounded-xl border transition-colors active:scale-95 contact-submit">
+                        Send Message
+                     </button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2.5 rounded-full border backdrop-blur-xl px-4 py-2.5 text-sm transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform-gpu translate-y-4 opacity-0 scale-95 pointer-events-none">
+       <i class="ph ph-check-circle ph-fill text-[16px]" id="toast-icon"></i>
+       <span id="toast-msg" class="text-[13px] font-medium tracking-tight whitespace-nowrap"></span>
+    </div>
+
+  </div>
+
+  <script src="dist/popup.bundle.js"></script>
+</body>
+</html>
