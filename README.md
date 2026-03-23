@@ -6,5 +6,5 @@
 
 <p align="center">
   <br/>
-  A powerful, all-in-one extension that gives you full control over your YouTube experience — with advanced playback, deep UI customization, and aggressive annoyance blocking.
+  A powerful, all-in-one extension that gives you full control over your YouTube experience with advanced playback, deep UI customization, and aggressive annoyance blocking.
 </p>
